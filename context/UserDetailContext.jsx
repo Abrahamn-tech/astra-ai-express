@@ -19,15 +19,33 @@ export const UserDetailProvider = ({ children }) => {
           setUserDetail(parsedUser);
         } catch (error) {
           console.error("Error parsing saved user:", error);
+          // Clear invalid user data
+          localStorage.removeItem("user");
         }
       }
       setIsLoadingUser(false);
     }
   }, []);
 
+  const logout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("user");
+    }
+    setUserDetail(null);
+    console.log("User logged out");
+  };
+
+  const login = (userData) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("user", JSON.stringify(userData));
+    }
+    setUserDetail(userData);
+    console.log("User logged in:", userData);
+  };
+
   return (
     <UserDetailContext.Provider
-      value={{ userDetail, setUserDetail, isLoadingUser }}
+      value={{ userDetail, setUserDetail, isLoadingUser, logout, login }}
     >
       {children}
     </UserDetailContext.Provider>

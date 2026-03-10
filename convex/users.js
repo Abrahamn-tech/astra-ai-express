@@ -3,6 +3,69 @@ import { mutation, query, action } from "./_generated/server";
 import { api } from "./_generated/api";
 import bcrypt from "bcryptjs";
 
+// ACTION: Google Login (handles both new and existing users)
+export const GoogleLogin = action({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    picture: v.union(v.string(), v.null()),
+    uid: v.string(),
+  },
+  handler: async (ctx, args) => {
+    try {
+      // Check if user already exists by email
+      const existingUser = await ctx.runQuery(api.users.GetUser, {
+        email: args.email,
+      });
+
+      if (existingUser) {
+        // User exists, update last login and return user
+        await ctx.runMutation(api.users.UpdateLastLogin, {
+          userId: existingUser._id,
+        });
+
+        // Log activity
+        await ctx.runMutation(api.users.LogActivity, {
+          user: existingUser._id,
+          action: "user_login",
+          details: { authMethod: "google", timestamp: Date.now() },
+        });
+
+        return existingUser._id;
+      } else {
+        // New user, create account
+        return await ctx.runMutation(api.users.InsertUser, {
+          name: args.name,
+          email: args.email,
+          username: null,
+          picture: args.picture,
+          uid: args.uid,
+          password: null,
+          authMethod: "google",
+          bio: null,
+          website: null,
+          github: null,
+          twitter: null,
+          linkedin: null,
+          isActive: true,
+          lastLoginAt: Date.now(),
+          emailVerified: true, // Auto-verify Google OAuth users
+          subscription: "free",
+          tokensUsed: 0,
+          tokensLimit: 1000, // Free tier limit
+          preferences: {
+            theme: "dark",
+            notifications: true,
+            autoSave: true,
+          },
+        });
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+});
+
 // ACTION: Create User (uses bcrypt)
 export const CreateUser = action({
   args: {
@@ -53,6 +116,30 @@ export const CreateUser = action({
         uid: args.uid,
         password: hashedPassword,
         authMethod: args.authMethod,
+        // Enhanced fields with defaults
+        bio: null,
+        website: null,
+        github: null,
+        twitter: null,
+        linkedin: null,
+        isActive: true,
+        lastLoginAt: Date.now(),
+        emailVerified: args.authMethod === "google", // Auto-verify Google OAuth users
+        subscription: "free",
+        tokensUsed: 0,
+        tokensLimit: 1000, // Free tier limit
+        preferences: {
+          theme: "dark",
+          notifications: true,
+          autoSave: true,
+        },
+      });
+
+      // Log activity
+      await ctx.runMutation(api.users.LogActivity, {
+        user: result,
+        action: "user_created",
+        details: { authMethod: args.authMethod },
       });
 
       return result;
@@ -72,6 +159,22 @@ export const InsertUser = mutation({
     uid: v.string(),
     password: v.union(v.string(), v.null()),
     authMethod: v.union(v.literal("google"), v.literal("username")),
+    bio: v.union(v.string(), v.null()),
+    website: v.union(v.string(), v.null()),
+    github: v.union(v.string(), v.null()),
+    twitter: v.union(v.string(), v.null()),
+    linkedin: v.union(v.string(), v.null()),
+    isActive: v.boolean(),
+    lastLoginAt: v.number(),
+    emailVerified: v.boolean(),
+    subscription: v.union(v.literal("free"), v.literal("pro"), v.literal("enterprise")),
+    tokensUsed: v.number(),
+    tokensLimit: v.number(),
+    preferences: v.optional(v.object({
+      theme: v.union(v.literal("dark"), v.literal("light")),
+      notifications: v.boolean(),
+      autoSave: v.boolean(),
+    })),
   },
   handler: async (ctx, args) => {
     const result = await ctx.db.insert("users", {
@@ -82,6 +185,18 @@ export const InsertUser = mutation({
       uid: args.uid,
       password: args.password,
       authMethod: args.authMethod,
+      bio: args.bio,
+      website: args.website,
+      github: args.github,
+      twitter: args.twitter,
+      linkedin: args.linkedin,
+      isActive: args.isActive,
+      lastLoginAt: args.lastLoginAt,
+      emailVerified: args.emailVerified,
+      subscription: args.subscription,
+      tokensUsed: args.tokensUsed,
+      tokensLimit: args.tokensLimit,
+      preferences: args.preferences,
     });
     return result;
   },
@@ -146,6 +261,18 @@ export const LoginWithUsername = action({
       throw new Error("Invalid password");
     }
 
+    // Update last login
+    await ctx.runMutation(api.users.UpdateLastLogin, {
+      userId: userData._id,
+    });
+
+    // Log activity
+    await ctx.runMutation(api.users.LogActivity, {
+      user: userData._id,
+      action: "user_login",
+      details: { authMethod: "username", timestamp: Date.now() },
+    });
+
     return userData;
   },
 });
@@ -175,5 +302,134 @@ export const GetUserByUsername = query({
       .filter((q) => q.eq(q.field("username"), args.username))
       .collect();
     return user[0];
+  },
+});
+
+// MUTATION: Log Activity
+export const LogActivity = mutation({
+  args: {
+    user: v.id("users"),
+    action: v.string(),
+    details: v.optional(v.any()),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.insert("activityLogs", {
+      user: args.user,
+      action: args.action,
+      details: args.details,
+      createdAt: Date.now(),
+    });
+  },
+});
+
+// ACTION: Update User Profile
+export const UpdateUserProfile = action({
+  args: {
+    userId: v.id("users"),
+    bio: v.optional(v.string()),
+    website: v.optional(v.string()),
+    github: v.optional(v.string()),
+    twitter: v.optional(v.string()),
+    linkedin: v.optional(v.string()),
+    preferences: v.optional(v.object({
+      theme: v.union(v.literal("dark"), v.literal("light")),
+      notifications: v.boolean(),
+      autoSave: v.boolean(),
+    })),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.GetUserById, {
+      userId: args.userId,
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const updateData = {};
+    if (args.bio !== undefined) updateData.bio = args.bio;
+    if (args.website !== undefined) updateData.website = args.website;
+    if (args.github !== undefined) updateData.github = args.github;
+    if (args.twitter !== undefined) updateData.twitter = args.twitter;
+    if (args.linkedin !== undefined) updateData.linkedin = args.linkedin;
+    if (args.preferences !== undefined) updateData.preferences = args.preferences;
+
+    await ctx.runMutation(api.users.UpdateUser, {
+      userId: args.userId,
+      ...updateData,
+    });
+
+    // Log activity
+    await ctx.runMutation(api.users.LogActivity, {
+      user: args.userId,
+      action: "profile_updated",
+      details: updateData,
+    });
+
+    return { success: true };
+  },
+});
+
+// MUTATION: Update User
+export const UpdateUser = mutation({
+  args: {
+    userId: v.id("users"),
+    bio: v.optional(v.union(v.string(), v.null())),
+    website: v.optional(v.union(v.string(), v.null())),
+    github: v.optional(v.union(v.string(), v.null())),
+    twitter: v.optional(v.union(v.string(), v.null())),
+    linkedin: v.optional(v.union(v.string(), v.null())),
+    preferences: v.optional(v.object({
+      theme: v.union(v.literal("dark"), v.literal("light")),
+      notifications: v.boolean(),
+      autoSave: v.boolean(),
+    })),
+  },
+  handler: async (ctx, args) => {
+    const { userId, ...updateData } = args;
+    await ctx.db.patch(userId, updateData);
+  },
+});
+
+// QUERY: Get User by ID
+export const GetUserById = query({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.userId);
+  },
+});
+
+// ACTION: Update Last Login
+export const UpdateLastLogin = action({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.runMutation(api.users.UpdateUserLastLogin, {
+      userId: args.userId,
+      lastLoginAt: Date.now(),
+    });
+
+    // Log activity
+    await ctx.runMutation(api.users.LogActivity, {
+      user: args.userId,
+      action: "user_login",
+      details: { timestamp: Date.now() },
+    });
+  },
+});
+
+// MUTATION: Update User Last Login
+export const UpdateUserLastLogin = mutation({
+  args: {
+    userId: v.id("users"),
+    lastLoginAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      lastLoginAt: args.lastLoginAt,
+    });
   },
 });

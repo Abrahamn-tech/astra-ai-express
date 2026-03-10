@@ -73,7 +73,21 @@ function CodeView() {
 
     } catch (error) {
       console.error("Error in GenerateAiCode:", error);
-      toast.error("Failed to generate AI code. Please try again later.");
+      
+      let errorMessage = "Failed to generate AI code. Please try again later.";
+      
+      // Add specific handling for rate limits
+      if (error.response?.status === 429) {
+        errorMessage = error.response?.data?.error || "Rate limit exceeded for code generation. Please try again in a few moments.";
+        if (error.response?.data?.retryAfter) {
+          errorMessage += ` (Retry after ${error.response.data.retryAfter} seconds)`;
+        }
+        if (error.response?.data?.suggestion) {
+          errorMessage += `\n\n💡 ${error.response.data.suggestion}`;
+        }
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setActiveTab("code");
       setLoading(false);

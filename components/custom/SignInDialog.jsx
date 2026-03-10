@@ -18,6 +18,7 @@ import { User, Lock, Loader2, Chrome } from "lucide-react";
 const SignInDialog = ({ openDialog, closeDialog }) => {
   const { setUserDetail } = React.useContext(UserDetailContext);
   const CreateUser = useAction(api.users.CreateUser);
+  const GoogleLogin = useAction(api.users.GoogleLogin);
   const LoginWithUsername = useAction(api.users.LoginWithUsername);
 
   const [tab, setTab] = useState("google");
@@ -46,18 +47,17 @@ const SignInDialog = ({ openDialog, closeDialog }) => {
 
         const user = userInfo.data;
 
-        const createdUser = await CreateUser({
+        const userId = await GoogleLogin({
           name: user?.name,
           email: user?.email,
           picture: user?.picture || DEFAULT_USER_IMAGE,
           uid: uuidv4(),
-          authMethod: "google",
         });
 
         const userWithId = {
           ...user,
           picture: user?.picture || DEFAULT_USER_IMAGE,
-          _id: createdUser,
+          _id: userId,
         };
 
         if (typeof window !== "undefined") {
@@ -67,6 +67,7 @@ const SignInDialog = ({ openDialog, closeDialog }) => {
         setUserDetail(userWithId);
         closeDialog(false);
       } catch (err) {
+        console.error("Google login error:", err);
         setError(err.message || "Google sign-in failed");
       } finally {
         setLoading(false);
@@ -176,14 +177,14 @@ const SignInDialog = ({ openDialog, closeDialog }) => {
         <div className="relative bg-black">
           <DialogHeader className="relative z-10 p-6 pb-4 border-b border-gray-800">
             <DialogTitle className="text-center">
-              <h2 className="font-bold text-2xl text-white">
+              <div className="font-bold text-2xl text-white">
                 Welcome to Astra AI
-              </h2>
+              </div>
             </DialogTitle>
             <DialogDescription>
-              <p className="mt-2 text-center text-gray-400 text-sm">
+              <div className="mt-2 text-center text-gray-400 text-sm">
                 Create amazing apps with AI assistance
-              </p>
+              </div>
             </DialogDescription>
           </DialogHeader>
 

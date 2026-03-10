@@ -67,10 +67,20 @@ function ChatView() {
       console.error("Error getting AI response:", err);
       console.error("Error details:", err.response?.data);
 
-      setError(
-        err.response?.data?.error ||
-          "Failed to get AI response. Please try again."
-      );
+      let errorMessage = err.response?.data?.error || "Failed to get AI response. Please try again.";
+      
+      // Add specific handling for rate limits
+      if (err.response?.status === 429) {
+        errorMessage = err.response?.data?.error || "Rate limit exceeded. Please try again in a few moments.";
+        if (err.response?.data?.retryAfter) {
+          errorMessage += ` (Retry after ${err.response.data.retryAfter} seconds)`;
+        }
+        if (err.response?.data?.suggestion) {
+          errorMessage += `\n\n💡 ${err.response.data.suggestion}`;
+        }
+      }
+
+      setError(errorMessage);
 
       // Remove the last user message if AI fails
       setMessages((prev) => prev.slice(0, -1));

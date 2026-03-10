@@ -6,7 +6,7 @@ import { UserDetailContext } from "@/context/UserDetailContext";
 import { ActionContext } from "@/context/ActionContext";
 import Link from "next/link";
 import SignInDialog from "@/components/custom/SignInDialog";
-import { Download, Rocket, Github, ChevronLeft, Loader2 } from "lucide-react";
+import { Download, Rocket, Github, ChevronLeft, Loader2, Home, FolderOpen, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import {
@@ -27,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 function Header() {
-  const { userDetail, setUserDetail } = useContext(UserDetailContext);
+  const { userDetail, setUserDetail, logout } = useContext(UserDetailContext);
   const { action, setAction, isLoading, error, handleAction } =
     useContext(ActionContext);
   const [openDialog, setOpenDialog] = useState(false);
@@ -39,8 +39,8 @@ function Header() {
   const isWorkspace = path?.includes("workspace");
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUserDetail(null);
+    logout();
+    router.push("/");
   };
 
   const handleBackToHome = () => {
@@ -124,19 +124,41 @@ function Header() {
 
         {/* If user not logged in → show buttons */}
         {!userDetail?.name ? (
-          <div className="flex gap-5">
-            <Button
-              className="text-white"
-              style={{
-                background: "linear-gradient(90deg, #3b82f6 0%, #1e40af 100%)",
-              }}
-              onClick={() => setOpenDialog(true)}
-            >
-              Get Started
-            </Button>
+          <div className="flex gap-3">
+            <Link href="/auth">
+              <Button
+                variant="outline"
+                className="border-gray-600 text-gray-300 hover:border-white hover:text-white cursor-pointer"
+              >
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/auth">
+              <Button
+                className="text-white cursor-pointer"
+                style={{
+                  background: "linear-gradient(90deg, #3b82f6 0%, #1e40af 100%)",
+                }}
+              >
+                Get Started
+              </Button>
+            </Link>
           </div>
         ) : (
           <div className="flex items-center gap-3">
+            {/* Navigation Links - Hide on workspace */}
+            {!isWorkspace && (
+              <div className="hidden md:flex items-center gap-4 mr-6">
+                <Link href="/workspaces" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
+                  <FolderOpen className="w-4 h-4" />
+                  Workspaces
+                </Link>
+                <Link href="/" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
+                  <Home className="w-4 h-4" />
+                  Home
+                </Link>
+              </div>
+            )}
             {/* Export, Deploy & GitHub buttons - only show on workspace pages */}
             {isWorkspace && (
               <div className="flex gap-3">
