@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { Button } from "@/components/ui/button";
@@ -87,7 +86,6 @@ export default function AboutPage() {
 
   return (
     <>
-      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"

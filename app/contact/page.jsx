@@ -2,7 +2,6 @@
 import React from "react";
 import Link from "next/link";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
-import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { Button } from "@/components/ui/button";
 import { Mail, Github, Twitter, Linkedin, MapPin, Phone, Send, MessageCircle, Users, HelpCircle, Star, ArrowUpRight } from "lucide-react";
@@ -88,7 +87,6 @@ export default function ContactPage() {
 
   return (
     <>
-      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"

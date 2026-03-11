@@ -6,7 +6,6 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { MessagesContext } from "@/context/MessagesContext";
 import { UserDetailContext } from "@/context/UserDetailContext";
-import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { Button } from "@/components/ui/button";
@@ -174,7 +173,6 @@ export default function WorkspacesPage() {
   if (!userDetail) {
     return (
       <>
-        <Header />
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center space-y-6">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-500/20 rounded-full mb-4">
@@ -199,7 +197,6 @@ export default function WorkspacesPage() {
 
   return (
     <>
-      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"

@@ -2,7 +2,6 @@
 import React from "react";
 import Link from "next/link";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
-import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { Button } from "@/components/ui/button";
 import { Search, Filter, ExternalLink, Code2, Zap, Globe, Database, Shield, Star, Users, Clock, Download, Play, ArrowUpRight } from "lucide-react";
@@ -149,7 +148,6 @@ export default function ExamplesPage() {
 
   return (
     <>
-      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"

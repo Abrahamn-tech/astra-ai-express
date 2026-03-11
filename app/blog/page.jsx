@@ -2,7 +2,6 @@
 import React from "react";
 import Link from "next/link";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
-import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { Button } from "@/components/ui/button";
 import { Search, Calendar, User, Clock, Tag, ChevronRight, Book, MessageCircle, Heart, Share2, ArrowUpRight } from "lucide-react";
@@ -134,7 +133,6 @@ export default function BlogPage() {
 
   return (
     <>
-      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"

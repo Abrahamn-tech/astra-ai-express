@@ -2,7 +2,6 @@
 import React from "react";
 import Link from "next/link";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
-import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { Button } from "@/components/ui/button";
 import { Book, Code2, Zap, Shield, Users, Github, ChevronRight, Search, FileText, Video, MessageCircle, ArrowUpRight } from "lucide-react";
@@ -93,7 +92,6 @@ export default function DocsPage() {
 
   return (
     <>
-      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"

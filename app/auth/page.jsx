@@ -6,7 +6,6 @@ import { UserDetailContext } from "@/context/UserDetailContext";
 import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { v4 as uuidv4 } from "uuid";
-import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { Button } from "@/components/ui/button";
@@ -220,7 +219,6 @@ export default function AuthPage() {
 
   return (
     <>
-      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"
