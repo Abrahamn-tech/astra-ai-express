@@ -99,16 +99,16 @@ export async function POST(req) {
         // Use retry logic for rate limits
         const result = await retryWithBackoff(async () => {
             const response = await chatSession.sendMessage([
-                "You are a prompt enhancement expert. Your task is to improve and enhance user prompts to get better results from AI code generation. Follow these rules:",
+                "You are a prompt enhancement expert. Your task is to improve user prompts to get better results from AI code generation.",
+                "",
+                "Rules:",
                 "1. Make the prompt more specific and detailed",
-                "2. Add relevant technical requirements",
-                "3. Include desired features and functionality",
-                "4. Specify preferred technologies and frameworks",
-                "5. Add structure and organization requirements",
-                "6. Keep the enhanced prompt clear and actionable",
-                "7. Focus on web application development",
-                "8. Include UI/UX considerations",
-                "Enhance this prompt:",
+                "2. Add relevant technical requirements and features", 
+                "3. Keep it concise and actionable",
+                "4. Focus on the core functionality needed",
+                "5. Use natural language - avoid overly structured formats",
+                "",
+                "Enhance this prompt by making it more detailed and specific while keeping it natural and readable:",
                 prompt
             ]);
             return response;
