@@ -28,6 +28,16 @@ export default function AuthPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Check for pending prompt on component mount
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const pendingPrompt = sessionStorage.getItem("pendingPrompt");
+      if (pendingPrompt) {
+        console.log("Found pending prompt:", pendingPrompt);
+      }
+    }
+  }, []);
+
   const DEFAULT_USER_IMAGE = "/user.jpg";
 
   const googleLogin = useGoogleLogin({
@@ -63,7 +73,21 @@ export default function AuthPage() {
         }
 
         setUserDetail(userWithId);
-        router.push("/workspaces");
+        
+        // Check for pending prompt and redirect accordingly
+        if (typeof window !== "undefined") {
+          const pendingPrompt = sessionStorage.getItem("pendingPrompt");
+          if (pendingPrompt) {
+            // Clear the pending prompt
+            sessionStorage.removeItem("pendingPrompt");
+            // Create workspace with the pending prompt
+            router.push(`/workspace?prompt=${encodeURIComponent(pendingPrompt)}`);
+          } else {
+            router.push("/workspaces");
+          }
+        } else {
+          router.push("/workspaces");
+        }
       } catch (err) {
         console.error("Google login error:", err);
         setError(err.message || "Google sign-in failed");
@@ -129,7 +153,21 @@ export default function AuthPage() {
         }
 
         setUserDetail(userWithId);
-        router.push("/workspaces");
+        
+        // Check for pending prompt and redirect accordingly
+        if (typeof window !== "undefined") {
+          const pendingPrompt = sessionStorage.getItem("pendingPrompt");
+          if (pendingPrompt) {
+            // Clear the pending prompt
+            sessionStorage.removeItem("pendingPrompt");
+            // Create workspace with the pending prompt
+            router.push(`/workspace?prompt=${encodeURIComponent(pendingPrompt)}`);
+          } else {
+            router.push("/workspaces");
+          }
+        } else {
+          router.push("/workspaces");
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -155,7 +193,21 @@ export default function AuthPage() {
         }
 
         setUserDetail(userWithPicture);
-        router.push("/workspaces");
+        
+        // Check for pending prompt and redirect accordingly
+        if (typeof window !== "undefined") {
+          const pendingPrompt = sessionStorage.getItem("pendingPrompt");
+          if (pendingPrompt) {
+            // Clear the pending prompt
+            sessionStorage.removeItem("pendingPrompt");
+            // Create workspace with the pending prompt
+            router.push(`/workspace?prompt=${encodeURIComponent(pendingPrompt)}`);
+          } else {
+            router.push("/workspaces");
+          }
+        } else {
+          router.push("/workspaces");
+        }
       } catch (err) {
         setError(err.message);
       } finally {

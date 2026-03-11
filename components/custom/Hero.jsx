@@ -68,7 +68,11 @@ function Hero() {
     setMessages([msg]);
 
     if (!userDetail || !userDetail._id) {
-      console.log("User not authenticated, redirecting to auth page");
+      console.log("User not authenticated, saving prompt and redirecting to auth page");
+      // Save the prompt to sessionStorage before redirecting
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("pendingPrompt", input);
+      }
       router.push("/auth");
       return;
     }
