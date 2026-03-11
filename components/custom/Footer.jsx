@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { Github, Twitter, Linkedin, Mail, Heart, Zap } from "lucide-react";
+import Image from "next/image";
+import { Github, Twitter, Linkedin, Mail, Heart } from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -9,19 +10,22 @@ export default function Footer() {
   return (
     <footer className="relative border-t border-gray-800/50 bg-black/40 backdrop-blur-sm">
       {/* Gradient Accent Line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-500 to-transparent" />
       
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           
           {/* Brand Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Zap className="h-4 w-4 text-white" />
+            <Link href="/" className="flex items-center gap-3 cursor-pointer">
+              <Image src="/logo.png" alt="Astra Logo" width={32} height={32} />
+              <div className="flex flex-col">
+                <span className="text-xl font-bold text-white">Astra AI</span>
+                <span className="text-xs font-normal text-gray-400 -mt-1">
+                  formerly known as MERN AI
+                </span>
               </div>
-              <span className="text-xl font-bold text-white">Astra AI</span>
-            </div>
+            </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
               Transform ideas into production-ready applications with the power of AI. 
               No coding experience required.
