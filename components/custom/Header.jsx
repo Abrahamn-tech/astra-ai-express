@@ -122,8 +122,8 @@ function Header() {
           </Button>
         )}
 
-        {/* If user not logged in → show buttons */}
-        {!userDetail?.name ? (
+        {/* If user not logged in → show auth buttons */}
+        {!userDetail?.name && !isWorkspace && (
           <div className="flex gap-3">
             <Link href="/auth">
               <Button
@@ -144,8 +144,11 @@ function Header() {
               </Button>
             </Link>
           </div>
-        ) : (
-          <div className="flex items-center gap-3">
+        )}
+
+        {/* If user is logged in → show navigation and action buttons */}
+        {userDetail?.name && (
+          <>
             {/* Navigation Links - Hide on workspace */}
             {!isWorkspace && (
               <div className="hidden md:flex items-center gap-4 mr-6">
@@ -159,6 +162,7 @@ function Header() {
                 </Link>
               </div>
             )}
+
             {/* Export, Deploy & GitHub buttons - only show on workspace pages */}
             {isWorkspace && (
               <div className="flex gap-3">
@@ -238,7 +242,7 @@ function Header() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
+          </>
         )}
       </div>
 
