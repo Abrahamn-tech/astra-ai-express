@@ -208,7 +208,7 @@ function Hero() {
 
           {/* Main Heading */}
           <div className="space-y-6">
-            <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-center leading-tight">
+            <h1 className="font-bold text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-center leading-tight">
               <span className="block text-white mb-2">Build production-ready</span>
               <span className="block bg-clip-text text-transparent bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 animate-gradient">
                 applications
