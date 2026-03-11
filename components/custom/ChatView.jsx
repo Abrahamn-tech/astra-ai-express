@@ -22,14 +22,17 @@ function ChatView() {
   const [userInput, setUserInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [chatLoaded, setChatLoaded] = useState(false);
   // const { toggleSidebar } = useSidebar();
 
   const GetWorkspaceData = async () => {
     const result = await convex.query(api.workspace.GetWorkspaceData, {
       workspaceId: id,
     });
-    setMessages(result?.messages);
+    setMessages(result?.messages || []);
     console.log(result);
+    // Mark chat as loaded after existing messages are loaded
+    setChatLoaded(true);
   };
 
   useEffect(() => {
@@ -37,13 +40,15 @@ function ChatView() {
   }, [id]);
 
   useEffect(() => {
-    if (messages?.length > 0) {
-      const role = messages[messages.length - 1]?.role;
-      if (role == "user") {
+    // Only generate AI response for NEW user messages after chat is loaded
+    if (messages?.length > 0 && chatLoaded) {
+      const lastMessage = messages[messages?.length - 1];
+      const role = lastMessage?.role;
+      if (role === "user") {
         GetAiResponse();
       }
     }
-  }, [messages]);
+  }, [messages, chatLoaded]);
 
   const GetAiResponse = async () => {
     setLoading(true);

@@ -20,7 +20,7 @@ export const GoogleLogin = action({
 
       if (existingUser) {
         // User exists, update last login and return user
-        await ctx.runMutation(api.users.UpdateLastLogin, {
+        await ctx.runAction(api.users.UpdateLastLogin, {
           userId: existingUser._id,
         });
 
@@ -262,7 +262,7 @@ export const LoginWithUsername = action({
     }
 
     // Update last login
-    await ctx.runMutation(api.users.UpdateLastLogin, {
+    await ctx.runAction(api.users.UpdateLastLogin, {
       userId: userData._id,
     });
 

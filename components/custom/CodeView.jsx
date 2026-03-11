@@ -29,15 +29,18 @@ function CodeView() {
   const { userDetail, setUserDetail } = useContext(UserDetailContext);
   const UpdateFiles = useMutation(api.workspace.UpdateFiles);
   const [loading, setLoading] = React.useState(false);
+  const [workspaceLoaded, setWorkspaceLoaded] = React.useState(false);
 
   React.useEffect(() => {
-    if (messages?.length > 0) {
-      const role = messages[messages?.length - 1].role;
+    // Only generate code for NEW user messages after workspace is loaded
+    if (messages?.length > 0 && workspaceLoaded) {
+      const lastMessage = messages[messages?.length - 1];
+      const role = lastMessage?.role;
       if (role === "user") {
         GenerateAiCode();
       }
     }
-  }, [messages]);
+  }, [messages, workspaceLoaded]);
 
   React.useEffect(() => {
     id && GetFiles();
@@ -51,8 +54,9 @@ function CodeView() {
     const mergedFiles = { ...Lookup.DEFAULT_FILE, ...result?.fileData };
     setFiles(mergedFiles);
     setLoading(false);
+    // Mark workspace as loaded after existing files are loaded
+    setWorkspaceLoaded(true);
   };
-
 
   const GenerateAiCode = async () => {
     setLoading(true);
