@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, Suspense } from "react";
 import { UserDetailContext } from "@/context/UserDetailContext";
 import { MessagesContext } from "@/context/MessagesContext";
 import { useMutation } from "convex/react";
@@ -8,7 +8,7 @@ import { api } from "@/convex/_generated/api";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { Loader2 } from "lucide-react";
 
-function WorkspacePage() {
+function WorkspacePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { userDetail, isLoadingUser } = useContext(UserDetailContext);
@@ -89,4 +89,19 @@ function WorkspacePage() {
   );
 }
 
-export default WorkspacePage;
+export default function WorkspacePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-12 w-12 text-blue-500 animate-spin mx-auto" />
+          <h2 className="text-2xl font-semibold text-white">
+            Loading workspace...
+          </h2>
+        </div>
+      </div>
+    }>
+      <WorkspacePageContent />
+    </Suspense>
+  );
+}
