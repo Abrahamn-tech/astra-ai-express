@@ -6,7 +6,10 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 // Simple in-memory rate limiting (in production, use Redis or database)
 const rateLimitMap = new Map();
 const RATE_LIMIT_WINDOW = 60000; // 1 minute
-const RATE_LIMIT_MAX_REQUESTS = 5; // 5 requests per minute for code generation (more restrictive)
+const RATE_LIMIT_MAX_REQUESTS = 3; // Reduced to 3 requests per minute
+
+// Track ongoing requests to prevent duplicates - use a more robust key
+const ongoingRequests = new Map(); // Store request info with timestamp
 
 function checkRateLimit(ip) {
   const now = Date.now();
@@ -18,7 +21,7 @@ function checkRateLimit(ip) {
   
   const requests = rateLimitMap.get(ip);
   
-  // Remove old requests outside the window
+  // Remove old requests outside of window
   const validRequests = requests.filter(timestamp => timestamp > windowStart);
   rateLimitMap.set(ip, validRequests);
   
@@ -31,16 +34,16 @@ function checkRateLimit(ip) {
   return true;
 }
 
-// Retry function for rate limits
-async function retryWithBackoff(fn, maxRetries = 3, delay = 2000) {
+// Simple retry function with reduced attempts and longer delays
+async function retryWithBackoff(fn, maxRetries = 1, initialDelay = 5000) {
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
     } catch (error) {
       if (error.status === 429 && i < maxRetries - 1) {
-        console.log(`Rate limit hit for code generation, retrying in ${delay}ms... (attempt ${i + 1}/${maxRetries})`);
+        const delay = initialDelay * Math.pow(2, i);
+        console.log(`Rate limit hit, retrying in ${delay}ms... (attempt ${i + 1}/${maxRetries})`);
         await new Promise(resolve => setTimeout(resolve, delay));
-        delay *= 2; // Exponential backoff
       } else {
         throw error;
       }
@@ -56,8 +59,41 @@ export async function POST(req) {
                req.headers.get('x-real-ip') || 
                'unknown';
     
+    // Create a unique key for this request based on IP and prompt hash
+    const promptHash = prompt.length > 50 ? prompt.substring(0, 50) : prompt;
+    const requestKey = `${ip}:${promptHash}`;
+    
+    // Check if there's already an ongoing request for this key
+    if (ongoingRequests.has(requestKey)) {
+        const requestInfo = ongoingRequests.get(requestKey);
+        const timeSinceStart = Date.now() - requestInfo.startTime;
+        
+        // If request has been running for more than 45 seconds, consider it stuck
+        if (timeSinceStart > 45000) {
+            ongoingRequests.delete(requestKey);
+            console.log(`Removed stuck request for key: ${requestKey}`);
+        } else {
+            return NextResponse.json(
+                { 
+                    error: "Request already in progress. Please wait for the current request to complete.",
+                    retryAfter: Math.ceil((45000 - timeSinceStart) / 1000),
+                    suggestion: "Code generation is in progress. Please wait a few seconds before trying again."
+                },
+                { status: 429 }
+            );
+        }
+    }
+    
+    // Mark this request as ongoing
+    ongoingRequests.set(requestKey, {
+        startTime: Date.now(),
+        ip: ip,
+        prompt: promptHash
+    });
+    
     // Check rate limit
     if (!checkRateLimit(ip)) {
+        ongoingRequests.delete(requestKey); // Clean up on rate limit error
         return NextResponse.json(
             { 
                 error: "Rate limit exceeded for code generation. Please try again in a few moments.",
@@ -101,6 +137,9 @@ export async function POST(req) {
             const response = await GenAiCode.sendMessage(prompt);
             return response;
         });
+        
+        // Clean up ongoing request (successful or not)
+        ongoingRequests.delete(requestKey);
         
         const resp = result.response.text();
         
