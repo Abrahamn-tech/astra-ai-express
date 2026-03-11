@@ -401,13 +401,14 @@ export const GetUserById = query({
   },
 });
 
-// ACTION: Update Last Login
+// ACTION: Update Last Login - Fixed to use runAction instead of runMutation
 export const UpdateLastLogin = action({
   args: {
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
-    await ctx.runMutation(api.users.UpdateUserLastLogin, {
+    // Force redeploy
+    await ctx.runAction(api.users.UpdateUserLastLogin, {
       userId: args.userId,
       lastLoginAt: Date.now(),
     });
