@@ -169,7 +169,7 @@ function Hero() {
         {/* Main Hero Section */}
         <div className="text-center space-y-6 max-w-4xl">
           <div className="space-y-4">
-            <h1 className="font-bold text-5xl md:text-6xl lg:text-7xl text-center">
+            <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl text-center">
               Turn your{" "}
               <span className="font-['Press_Start_2P'] bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-sky-300 animate-gradient">
                 ideas

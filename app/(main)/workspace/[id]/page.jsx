@@ -1,6 +1,7 @@
 import ChatView from "@/components/custom/ChatView";
 import CodeView from "@/components/custom/CodeView";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+import Header from "@/components/custom/Header";
 import React from "react";
 
 function Workspace() {
@@ -23,6 +24,7 @@ function Workspace() {
       />
 
       {/* Workspace Content */}
+      <Header />
       <div className="p-3 pr-5 mt-3">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <ChatView />

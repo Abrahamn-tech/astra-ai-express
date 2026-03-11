@@ -115,10 +115,10 @@ function Header() {
           <Button
             variant="outline"
             onClick={handleBackToHome}
-            className="flex items-center gap-2 border border-white text-white hover:bg-transparent hover:text-white"
+            className="flex items-center gap-2 border border-gray-600 text-gray-300 hover:border-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10 transition-all duration-300 shadow-lg hover:shadow-cyan-400/20 group"
           >
-            <ChevronLeft className="w-4 h-4" />
-            back to home
+            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-medium">Back to Home</span>
           </Button>
         )}
 
@@ -165,39 +165,42 @@ function Header() {
                 <Button
                   variant="ghost"
                   onClick={() => onActionBtn("export")}
-                  className="flex items-center gap-2 cursor-pointer"
+                  className="flex items-center gap-2 cursor-pointer border border-gray-700 text-gray-300 hover:border-emerald-500 hover:text-emerald-300 hover:bg-emerald-500/10 transition-all duration-300 shadow-lg hover:shadow-emerald-500/20 group"
                   disabled={isLoading}
                 >
-                  Export <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <span className="font-medium">Export</span>
                 </Button>
                 <Button
                   onClick={() => onActionBtn("deploy")}
-                  className="text-white flex items-center gap-2"
+                  className="text-white flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-blue-500/30 hover:scale-105 group"
                   style={{
                     background:
-                      "linear-gradient(90deg, #3b82f6 0%, #1e40af 100%)",
+                      "linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #1e3a8a 100%)",
                   }}
                   disabled={isLoading}
                 >
-                  Deploy <Rocket className="w-4 h-4" />
+                  <Rocket className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                  <span className="font-medium">Deploy</span>
                 </Button>
                 <Button
                   onClick={handleGithubClick}
-                  className="text-white flex items-center gap-2"
+                  className="text-white flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-purple-500/30 hover:scale-105 group"
                   style={{
                     background:
-                      "linear-gradient(90deg, #6366f1 0%, #4f46e5 100%)",
+                      "linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%)",
                   }}
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Pushing...
+                      <span className="font-medium">Pushing...</span>
                     </>
                   ) : (
                     <>
-                      Push to Github <Github className="w-4 h-4" />
+                      <Github className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                      <span className="font-medium">Push to GitHub</span>
                     </>
                   )}
                 </Button>

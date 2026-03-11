@@ -248,10 +248,10 @@ function ChatView() {
       </div>
       {/* Input Section */}
       <div
-        className="p-5 border rounded-xl max-w-xl w-full mt-3"
+        className="p-5 border rounded-xl max-w-xl w-full mt-3 shadow-xl"
         style={{ backgroundColor: Colors.BACKGROUND }}
       >
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <textarea
             value={userInput}
             placeholder={Lookup.INPUT_PLACEHOLDER}
@@ -265,20 +265,34 @@ function ChatView() {
               }
             }}
             spellCheck={false}
-            className="outline-none bg-transparent w-full h-32 max-h-56 resize-none"
+            className="outline-none bg-transparent w-full h-32 max-h-56 resize-none text-gray-100 placeholder-gray-500 rounded-lg p-3 border border-gray-700 focus:border-blue-500 transition-colors duration-200"
             disabled={loading}
           />
           {userInput && (
-            <ArrowRight
+            <button
               onClick={() => onGenerate(userInput)}
-              className={`bg-blue-500 p-2 h-10 w-10 rounded-md cursor-pointer ${
+              disabled={loading}
+              className={`bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white p-3 h-12 w-12 rounded-xl cursor-pointer transition-all duration-200 shadow-lg hover:shadow-blue-500/30 hover:scale-105 flex items-center justify-center group ${
                 loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
-            />
+            >
+              {loading ? (
+                <Loader2Icon className="h-5 w-5 animate-spin" />
+              ) : (
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              )}
+            </button>
           )}
         </div>
-        <div>
-          <Link className="h-5 w-5" />
+        {/* Quick actions bar */}
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-700">
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <Bot className="h-4 w-4" />
+            <span>AI Assistant</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <span>Press Enter to send</span>
+          </div>
         </div>
       </div>{" "}
     </div>
