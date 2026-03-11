@@ -2,9 +2,10 @@
 import React from "react";
 import Link from "next/link";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { Button } from "@/components/ui/button";
-import { Book, Code2, Zap, Shield, Users, Github, ChevronRight, Search, FileText, Video, MessageCircle } from "lucide-react";
+import { Book, Code2, Zap, Shield, Users, Github, ChevronRight, Search, FileText, Video, MessageCircle, ArrowUpRight } from "lucide-react";
 
 export default function DocsPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -92,6 +93,7 @@ export default function DocsPage() {
 
   return (
     <>
+      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"
@@ -111,60 +113,75 @@ export default function DocsPage() {
         {/* Header */}
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-white mb-4">Documentation</h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Everything you need to know to build amazing applications with Astra AI
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 text-sm font-medium mb-6">
+              <Book className="h-4 w-4" />
+              <span>Documentation</span>
+              <ArrowUpRight className="h-4 w-4" />
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-4">
+              Everything You Need to <span className="bg-clip-text text-transparent bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400">Succeed</span>
+            </h1>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              Comprehensive guides and API documentation to build amazing applications with Astra AI
             </p>
           </div>
 
           {/* Search */}
           <div className="max-w-2xl mx-auto mb-12">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
               <input
                 type="text"
                 placeholder="Search documentation..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-black/40 backdrop-blur-sm border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full pl-12 pr-4 py-3.5 bg-black/60 backdrop-blur-xl border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all shadow-xl"
               />
             </div>
           </div>
 
           {/* Quick Links */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-            <Link href="/docs/quick-start" className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            <Link href="/docs/quick-start" className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-xl p-4 hover:border-blue-500 transition-all duration-300 hover:scale-105 group">
               <div className="flex items-center gap-3">
-                <Zap className="h-8 w-8 text-blue-400" />
+                <div className="p-2 bg-blue-500/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                  <Zap className="h-6 w-6 text-blue-400" />
+                </div>
                 <div>
-                  <h3 className="text-white font-semibold">Quick Start</h3>
+                  <h3 className="text-white font-semibold group-hover:text-blue-300 transition-colors">Quick Start</h3>
                   <p className="text-gray-400 text-sm">Get started in 5 minutes</p>
                 </div>
               </div>
             </Link>
-            <Link href="/docs/api" className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            <Link href="/docs/api" className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-xl p-4 hover:border-purple-500 transition-all duration-300 hover:scale-105 group">
               <div className="flex items-center gap-3">
-                <Code2 className="h-8 w-8 text-purple-400" />
+                <div className="p-2 bg-purple-500/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                  <Code2 className="h-6 w-6 text-purple-400" />
+                </div>
                 <div>
-                  <h3 className="text-white font-semibold">API Reference</h3>
+                  <h3 className="text-white font-semibold group-hover:text-purple-300 transition-colors">API Reference</h3>
                   <p className="text-gray-400 text-sm">Complete API docs</p>
                 </div>
               </div>
             </Link>
-            <Link href="/docs/examples" className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            <Link href="/docs/examples" className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-xl p-4 hover:border-emerald-500 transition-all duration-300 hover:scale-105 group">
               <div className="flex items-center gap-3">
-                <Book className="h-8 w-8 text-green-400" />
+                <div className="p-2 bg-emerald-500/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                  <Book className="h-6 w-6 text-emerald-400" />
+                </div>
                 <div>
-                  <h3 className="text-white font-semibold">Examples</h3>
+                  <h3 className="text-white font-semibold group-hover:text-emerald-300 transition-colors">Examples</h3>
                   <p className="text-gray-400 text-sm">Sample projects</p>
                 </div>
               </div>
             </Link>
-            <Link href="/docs/support" className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            <Link href="/docs/support" className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-xl p-4 hover:border-orange-500 transition-all duration-300 hover:scale-105 group">
               <div className="flex items-center gap-3">
-                <MessageCircle className="h-8 w-8 text-orange-400" />
+                <div className="p-2 bg-orange-500/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                  <MessageCircle className="h-6 w-6 text-orange-400" />
+                </div>
                 <div>
-                  <h3 className="text-white font-semibold">Support</h3>
+                  <h3 className="text-white font-semibold group-hover:text-orange-300 transition-colors">Support</h3>
                   <p className="text-gray-400 text-sm">Get help</p>
                 </div>
               </div>
@@ -175,16 +192,16 @@ export default function DocsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-xl p-6 sticky top-6">
+              <div className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 sticky top-6 shadow-xl">
                 <h2 className="text-xl font-semibold text-white mb-6">Table of Contents</h2>
                 <nav className="space-y-2">
                   {sections.map((section) => (
                     <button
                       key={section.id}
                       onClick={() => setActiveSection(section.id)}
-                      className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                      className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 hover:scale-105 ${
                         activeSection === section.id
-                          ? "bg-blue-500 text-white"
+                          ? "bg-blue-500 text-white shadow-lg"
                           : "text-gray-400 hover:text-white hover:bg-gray-800"
                       }`}
                     >
@@ -201,9 +218,11 @@ export default function DocsPage() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
               {filteredSections.map((section) => (
-                <div key={section.id} className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-xl p-6">
+                <div key={section.id} className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-xl">
                   <div className="flex items-center gap-3 mb-6">
-                    <section.icon className="h-6 w-6 text-blue-400" />
+                    <div className="p-2 bg-blue-500/20 rounded-lg">
+                      <section.icon className="h-6 w-6 text-blue-400" />
+                    </div>
                     <h2 className="text-2xl font-bold text-white">{section.title}</h2>
                   </div>
                   <p className="text-gray-400 mb-6">{section.description}</p>
@@ -213,7 +232,7 @@ export default function DocsPage() {
                       <Link
                         key={article.slug}
                         href={`/docs/${section.id}/${article.slug}`}
-                        className="flex items-center justify-between p-4 bg-gray-900/50 rounded-lg hover:bg-gray-900 transition-colors group"
+                        className="flex items-center justify-between p-4 bg-gray-900/50 rounded-xl hover:bg-gray-900 transition-all duration-300 group hover:scale-105"
                       >
                         <div className="flex items-center gap-3">
                           <FileText className="h-5 w-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
@@ -240,17 +259,17 @@ export default function DocsPage() {
 
           {/* Community Section */}
           <div className="mt-16 text-center">
-            <div className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-xl p-8">
+            <div className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-2xl p-8 shadow-xl">
               <h2 className="text-2xl font-bold text-white mb-4">Join Our Community</h2>
-              <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-                Connect with other developers, share your projects, and get help from the Astra AI team
+              <p className="text-gray-400 mb-6 max-w-2xl mx-auto leading-relaxed">
+                Connect with other developers, share your projects, and get help from Astra AI team
               </p>
               <div className="flex justify-center gap-4">
-                <Button variant="outline" className="border-gray-700 text-gray-300 hover:border-blue-500 hover:text-blue-300">
+                <Button variant="outline" className="border-gray-700 text-gray-300 hover:border-blue-500 hover:text-blue-300 hover:scale-105 transition-all">
                   <Github className="h-4 w-4 mr-2" />
                   GitHub
                 </Button>
-                <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                <Button className="bg-blue-500 hover:bg-blue-600 text-white hover:scale-105 transition-all shadow-lg hover:shadow-blue-500/30">
                   <Users className="h-4 w-4 mr-2" />
                   Discord
                 </Button>

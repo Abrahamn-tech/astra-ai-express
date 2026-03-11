@@ -2,6 +2,7 @@ import ChatView from "@/components/custom/ChatView";
 import CodeView from "@/components/custom/CodeView";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import Header from "@/components/custom/Header";
+import Footer from "@/components/custom/Footer";
 import React from "react";
 
 function Workspace() {
@@ -33,6 +34,7 @@ function Workspace() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

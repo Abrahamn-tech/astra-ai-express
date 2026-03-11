@@ -2,9 +2,10 @@
 import React from "react";
 import Link from "next/link";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { Button } from "@/components/ui/button";
-import { Search, Calendar, User, Clock, Tag, ChevronRight, Book, MessageCircle, Heart, Share2 } from "lucide-react";
+import { Search, Calendar, User, Clock, Tag, ChevronRight, Book, MessageCircle, Heart, Share2, ArrowUpRight } from "lucide-react";
 
 export default function BlogPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -133,6 +134,7 @@ export default function BlogPage() {
 
   return (
     <>
+      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"
@@ -152,25 +154,32 @@ export default function BlogPage() {
         {/* Header */}
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-white mb-4">Astra AI Blog</h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Latest news, tutorials, and insights from the Astra AI team and community
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 text-sm font-medium mb-6">
+              <Book className="h-4 w-4" />
+              <span>Astra AI Blog</span>
+              <ArrowUpRight className="h-4 w-4" />
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-4">
+              Latest <span className="bg-clip-text text-transparent bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400">Insights</span>
+            </h1>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              Latest news, tutorials, and insights from Astra AI team and community
             </p>
           </div>
 
           {/* Search and Category Filter */}
-          <div className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-xl p-6 mb-12">
+          <div className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 mb-12 shadow-xl">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
               <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                <div className="relative group">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                   <input
                     type="text"
                     placeholder="Search blog posts..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
                   />
                 </div>
               </div>
@@ -181,10 +190,10 @@ export default function BlogPage() {
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    className={`px-4 py-3 rounded-xl font-medium transition-all duration-200 hover:scale-105 ${
                       selectedCategory === category.id
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-900 text-gray-400 border border-gray-800 hover:border-gray-700"
+                        ? "bg-blue-500 text-white shadow-lg"
+                        : "bg-gray-900/50 text-gray-400 border border-gray-700 hover:border-gray-600"
                     }`}
                   >
                     {category.name}
@@ -200,14 +209,14 @@ export default function BlogPage() {
               <h2 className="text-2xl font-bold text-white mb-6">Featured Posts</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {featuredPosts.map((post) => (
-                  <div key={post.id} className="group bg-black/40 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-blue-500 transition-all duration-300">
+                  <div key={post.id} className="group bg-black/60 backdrop-blur-xl border border-gray-800 rounded-2xl overflow-hidden hover:border-blue-500 transition-all duration-300 hover:scale-105 shadow-xl">
                     {/* Post Image */}
-                    <div className="relative h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                    <div className="relative h-48 bg-linear-to-br from-blue-500/20 to-purple-500/20">
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <Book className="h-16 w-16 text-blue-400/50" />
+                        <Book className="h-16 w-16 text-blue-400/50 group-hover:scale-110 transition-transform duration-300" />
                       </div>
                       <div className="absolute top-4 left-4">
-                        <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                        <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
                           Featured
                         </span>
                       </div>
@@ -227,7 +236,7 @@ export default function BlogPage() {
                         {post.tags.slice(0, 3).map((tag, index) => (
                           <span
                             key={index}
-                            className="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded"
+                            className="bg-gray-800/50 text-gray-300 text-xs px-2 py-1 rounded-lg border border-gray-700"
                           >
                             #{tag}
                           </span>
@@ -267,11 +276,11 @@ export default function BlogPage() {
           {/* Regular Posts */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {regularPosts.map((post) => (
-              <div key={post.id} className="group bg-black/40 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-blue-500 transition-all duration-300">
+              <div key={post.id} className="group bg-black/60 backdrop-blur-xl border border-gray-800 rounded-2xl overflow-hidden hover:border-blue-500 transition-all duration-300 hover:scale-105 shadow-xl">
                 {/* Post Image */}
-                <div className="relative h-32 bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                <div className="relative h-32 bg-linear-to-br from-blue-500/20 to-purple-500/20">
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <Book className="h-12 w-12 text-blue-400/50" />
+                    <Book className="h-12 w-12 text-blue-400/50 group-hover:scale-110 transition-transform duration-300" />
                   </div>
                 </div>
 
@@ -289,7 +298,7 @@ export default function BlogPage() {
                     {post.tags.slice(0, 2).map((tag, index) => (
                       <span
                         key={index}
-                        className="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded"
+                        className="bg-gray-800/50 text-gray-300 text-xs px-2 py-1 rounded-lg border border-gray-700"
                       >
                         #{tag}
                       </span>
@@ -325,18 +334,18 @@ export default function BlogPage() {
           </div>
 
           {/* Newsletter Section */}
-          <div className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-xl p-8 text-center mb-12">
+          <div className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-2xl p-8 text-center mb-12 shadow-xl">
             <h2 className="text-2xl font-bold text-white mb-4">Stay Updated</h2>
-            <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Get the latest tutorials, announcements, and insights delivered to your inbox
+            <p className="text-gray-400 mb-6 max-w-2xl mx-auto leading-relaxed">
+              Get latest tutorials, announcements, and insights delivered to your inbox
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+                className="flex-1 px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all"
               />
-              <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+              <Button className="bg-blue-500 hover:bg-blue-600 text-white hover:scale-105 transition-all shadow-lg hover:shadow-blue-500/30">
                 Subscribe
               </Button>
             </div>
@@ -350,14 +359,14 @@ export default function BlogPage() {
                 <Link
                   key={category.id}
                   href={`/blog/category/${category.id}`}
-                  className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-lg p-4 hover:border-blue-500 transition-colors"
+                  className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-xl p-4 hover:border-blue-500 transition-all duration-300 hover:scale-105 group"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-white font-medium">{category.name}</h3>
+                      <h3 className="text-white font-medium group-hover:text-blue-300 transition-colors">{category.name}</h3>
                       <p className="text-gray-400 text-sm">{categoryCount} posts</p>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-gray-400" />
+                    <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-blue-400 transition-colors" />
                   </div>
                 </Link>
               );

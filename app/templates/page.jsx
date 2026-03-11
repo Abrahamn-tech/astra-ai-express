@@ -2,9 +2,10 @@
 import React from "react";
 import Link from "next/link";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, Grid3X3, List, Star, Download, Heart, Eye, Clock, Sparkles, Code2, Zap } from "lucide-react";
+import { Search, Filter, Grid3X3, List, Star, Download, Heart, Eye, Clock, Sparkles, Code2, Zap, ArrowUpRight } from "lucide-react";
 
 export default function TemplatesPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -84,6 +85,7 @@ export default function TemplatesPage() {
 
   return (
     <>
+      <Header />
       <BackgroundGradientAnimation
         gradientBackgroundStart="rgb(5, 8, 25)"
         gradientBackgroundEnd="rgb(10, 15, 40)"
@@ -103,25 +105,32 @@ export default function TemplatesPage() {
         {/* Header */}
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-white mb-4">Templates Gallery</h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Start your project faster with our collection of professionally designed templates
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 text-sm font-medium mb-6">
+              <Sparkles className="h-4 w-4" />
+              <span>Templates Gallery</span>
+              <ArrowUpRight className="h-4 w-4" />
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-4">
+              Start <span className="bg-clip-text text-transparent bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400">Faster</span>
+            </h1>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              Build amazing applications faster with our collection of professionally designed templates
             </p>
           </div>
 
           {/* Search and Filters */}
-          <div className="bg-black/40 backdrop-blur-sm border border-gray-800 rounded-xl p-6 mb-8">
+          <div className="bg-black/60 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 mb-8 shadow-2xl">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
               <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                <div className="relative group">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                   <input
                     type="text"
                     placeholder="Search templates..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
                   />
                 </div>
               </div>
@@ -132,10 +141,10 @@ export default function TemplatesPage() {
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    className={`px-4 py-3 rounded-xl font-medium transition-all duration-200 hover:scale-105 ${
                       selectedCategory === category.id
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-900 text-gray-400 border border-gray-800 hover:border-gray-700"
+                        ? "bg-blue-500 text-white shadow-lg"
+                        : "bg-gray-900/50 text-gray-400 border border-gray-700 hover:border-gray-600"
                     }`}
                   >
                     <category.icon className="h-4 w-4 inline mr-2" />
@@ -145,16 +154,20 @@ export default function TemplatesPage() {
               </div>
 
               {/* View Mode */}
-              <div className="flex gap-2 bg-gray-900 border border-gray-800 rounded-lg p-1">
+              <div className="flex gap-2 bg-gray-900/50 border border-gray-700 rounded-xl p-1">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`p-2 rounded ${viewMode === "grid" ? "bg-blue-500 text-white" : "text-gray-400 hover:text-white"}`}
+                  className={`p-3 rounded-lg transition-all ${
+                    viewMode === "grid" ? "bg-blue-500 text-white shadow-lg" : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  }`}
                 >
                   <Grid3X3 className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`p-2 rounded ${viewMode === "list" ? "bg-blue-500 text-white" : "text-gray-400 hover:text-white"}`}
+                  className={`p-3 rounded-lg transition-all ${
+                    viewMode === "list" ? "bg-blue-500 text-white shadow-lg" : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  }`}
                 >
                   <List className="h-4 w-4" />
                 </button>
@@ -173,14 +186,14 @@ export default function TemplatesPage() {
               {filteredTemplates.map((template) => (
                 <div
                   key={template.id}
-                  className="group bg-black/40 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-blue-500 transition-all duration-300"
+                  className="group bg-black/60 backdrop-blur-xl border border-gray-800 rounded-2xl overflow-hidden hover:border-blue-500 transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-blue-500/20"
                 >
                   {/* Template Image */}
-                  <div className="relative h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                  <div className="relative h-48 bg-linear-to-br from-blue-500/20 to-purple-500/20">
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Code2 className="h-16 w-16 text-blue-400/50" />
+                      <Code2 className="h-16 w-16 text-blue-400/50 group-hover:scale-110 transition-transform duration-300" />
                     </div>
-                    <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-white">
+                    <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white border border-gray-700">
                       {template.difficulty}
                     </div>
                   </div>
@@ -201,7 +214,7 @@ export default function TemplatesPage() {
                       {template.tags.slice(0, 3).map((tag, index) => (
                         <span
                           key={index}
-                          className="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded"
+                          className="bg-gray-800/50 text-gray-300 text-xs px-2 py-1 rounded-lg border border-gray-700"
                         >
                           {tag}
                         </span>
@@ -229,19 +242,19 @@ export default function TemplatesPage() {
                     {/* Author */}
                     <div className="flex items-center justify-between">
                       <div className="text-sm text-gray-400">
-                        by <span className="text-blue-400">{template.author}</span>
+                        by <span className="text-blue-400 hover:text-blue-300 transition-colors">{template.author}</span>
                       </div>
                       <div className="flex gap-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="border-gray-700 text-gray-300 hover:border-blue-500 hover:text-blue-300"
+                          className="border-gray-700 text-gray-300 hover:border-blue-500 hover:text-blue-300 hover:scale-105 transition-all"
                         >
                           Preview
                         </Button>
                         <Button
                           size="sm"
-                          className="bg-blue-500 hover:bg-blue-600 text-white"
+                          className="bg-blue-500 hover:bg-blue-600 text-white hover:scale-105 transition-all shadow-lg hover:shadow-blue-500/30"
                         >
                           Use Template
                         </Button>
