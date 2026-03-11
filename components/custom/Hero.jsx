@@ -197,47 +197,39 @@ function Hero() {
 
       {/* Hero Content */}
       <div className="flex flex-col items-center mt-20 xl:mt-32 gap-12 px-4">
-        {/* Professional Hero Section */}
-        <div className="text-center space-y-8 max-w-5xl">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 text-sm font-medium">
-            <Sparkles className="h-4 w-4" />
-            <span>Powered by Advanced AI</span>
-            <ArrowUpRight className="h-4 w-4" />
-          </div>
-
-          {/* Main Heading */}
-          <div className="space-y-6">
-            <h1 className="font-bold text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-center leading-tight">
-              <span className="block text-white mb-2">Build production-ready</span>
-              <span className="block bg-clip-text text-transparent bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 animate-gradient">
-                applications
-              </span>
-              <span className="block text-white mt-2">with AI</span>
+        {/* Main Hero Section */}
+        <div className="text-center space-y-6 max-w-4xl">
+          <div className="space-y-4">
+            <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl text-center">
+              Turn your{" "}
+              <span className="font-['Press_Start_2P'] bg-clip-text text-transparent bg-linear-to-r from-cyan-400 via-blue-400 to-sky-300 animate-gradient">
+                ideas
+              </span>{" "}
+              into{" "}
+              <span className="font-['Press_Start_2P'] bg-clip-text text-transparent bg-linear-to-r from-purple-400 via-violet-400 to-purple-300 animate-gradient">
+                apps
+              </span>{" "}
+              instantly
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 font-normal max-w-4xl mx-auto leading-relaxed">
-              Transform your ideas into fully functional web applications in minutes. 
-              Modern tech stack, enterprise-grade security, and seamless GitHub integration.
+            <p className="text-xl md:text-2xl text-gray-100 font-medium max-w-3xl mx-auto">
+              Transform your concepts into production-ready applications with the power of AI. 
+              No coding experience required - just describe what you want to build.
             </p>
           </div>
 
           {/* Stats Bar */}
-          <div className="flex flex-wrap justify-center gap-12 py-8 border-y border-gray-800">
+          <div className="flex flex-wrap justify-center gap-8 py-6">
             <div className="text-center">
-              <div className="text-4xl font-bold text-white mb-1">10K+</div>
+              <div className="text-3xl font-bold text-blue-400">10K+</div>
               <div className="text-sm text-gray-400">Apps Created</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-white mb-1">50K+</div>
+              <div className="text-3xl font-bold text-purple-400">50K+</div>
               <div className="text-sm text-gray-400">Developers</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-white mb-1">99.9%</div>
-              <div className="text-sm text-gray-400">Uptime</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-white mb-1">1M+</div>
-              <div className="text-sm text-gray-400">Lines Generated</div>
+              <div className="text-3xl font-bold text-emerald-400">1M+</div>
+              <div className="text-sm text-gray-400">Lines of Code</div>
             </div>
           </div>
         </div>
