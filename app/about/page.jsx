@@ -5,7 +5,7 @@ import Header from "@/components/custom/Header";
 import Footer from "@/components/custom/Footer";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { Button } from "@/components/ui/button";
-import { Users, Target, Lightbulb, Globe, Award, Heart, Github, Twitter, Linkedin, Mail, ArrowRight, Zap, Shield, Code2, ArrowUpRight, CheckCircle } from "lucide-react";
+import { Users, Target, Lightbulb, Globe, Award, Heart, Github, Twitter, Linkedin, Mail, ArrowRight, Zap, Shield, Code2, ArrowUpRight, CheckCircle, Rocket } from "lucide-react";
 
 export default function AboutPage() {
   const team = [
