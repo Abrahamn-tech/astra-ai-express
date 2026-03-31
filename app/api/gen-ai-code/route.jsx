@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { sendOpenRouterRequest } from "@/services/openrouterService";
+import { 
+  getCurrentAIProvider, 
+  isOpenRouterProvider, 
+  validateProviderEnvironment, 
+  getProviderErrorMessage 
+} from "@/services/aiProviderConfig";
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
@@ -91,9 +98,21 @@ export async function POST(req) {
         prompt: promptHash
     });
     
+    // Validate provider environment
+    if (!validateProviderEnvironment()) {
+        ongoingRequests.delete(requestKey);
+        return NextResponse.json(
+            { 
+                error: getProviderErrorMessage(),
+                suggestion: "Please check your environment variables for the current AI provider."
+            },
+            { status: 500 }
+        );
+    }
+    
     // Check rate limit
     if (!checkRateLimit(ip)) {
-        ongoingRequests.delete(requestKey); // Clean up on rate limit error
+        ongoingRequests.delete(requestKey);
         return NextResponse.json(
             { 
                 error: "Rate limit exceeded for code generation. Please try again in a few moments.",
@@ -105,6 +124,45 @@ export async function POST(req) {
     }
 
     try {
+        // Use OpenRouter if configured as provider
+        if (isOpenRouterProvider()) {
+            console.log("Using OpenRouter provider for code generation");
+            
+            // Convert prompt to messages format for OpenRouter
+            const messages = [
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ];
+            
+            // Use retry logic for rate limits
+            const resp = await retryWithBackoff(async () => {
+                return await sendOpenRouterRequest(messages);
+            });
+            
+            // Clean up ongoing request (successful)
+            ongoingRequests.delete(requestKey);
+            
+            // Try to parse the response, if it fails, return it as plain text
+            try {
+                return NextResponse.json(JSON.parse(resp));
+            } catch (parseError) {
+                // If parsing fails, return the raw response
+                return NextResponse.json({ 
+                    code: resp,
+                    files: {
+                        "index.js": {
+                            code: resp
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Fallback to Gemini (original code preserved)
+        console.log("Using Gemini provider for code generation");
+        
         // Try different model options in order of preference
         let model;
         const modelOptions = [

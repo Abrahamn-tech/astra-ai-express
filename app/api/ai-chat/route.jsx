@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { sendOpenRouterRequest } from "@/services/openrouterService";
+import { 
+  getCurrentAIProvider, 
+  isOpenRouterProvider, 
+  validateProviderEnvironment, 
+  getProviderErrorMessage 
+} from "@/services/aiProviderConfig";
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
@@ -56,6 +63,17 @@ export async function POST(req) {
                req.headers.get('x-real-ip') || 
                'unknown';
     
+    // Validate provider environment
+    if (!validateProviderEnvironment()) {
+        return NextResponse.json(
+            { 
+                error: getProviderErrorMessage(),
+                suggestion: "Please check your environment variables for the current AI provider."
+            },
+            { status: 500 }
+        );
+    }
+    
     // Check rate limit
     if (!checkRateLimit(ip)) {
         return NextResponse.json(
@@ -68,6 +86,29 @@ export async function POST(req) {
     }
 
     try {
+        // Use OpenRouter if configured as provider
+        if (isOpenRouterProvider()) {
+            console.log("Using OpenRouter provider for AI chat");
+            
+            // Convert prompt to messages format for OpenRouter
+            const messages = [
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ];
+            
+            // Use retry logic for rate limits
+            const AIResp = await retryWithBackoff(async () => {
+                return await sendOpenRouterRequest(messages);
+            });
+            
+            return NextResponse.json({ result: AIResp });
+        }
+        
+        // Fallback to Gemini (original code preserved)
+        console.log("Using Gemini provider for AI chat");
+        
         // Try different model options in order of preference
         let model;
         const modelOptions = [
