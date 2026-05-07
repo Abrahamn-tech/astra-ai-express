@@ -55,7 +55,7 @@ const Provider = ({ children }) => {
                 defaultTheme="dark"
                 disableTransitionOnChange
               >
-                <Header />
+
                 {children}
               </NextThemesProvider>
             </ActionProvider>
