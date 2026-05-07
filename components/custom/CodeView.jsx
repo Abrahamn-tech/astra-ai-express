@@ -28,7 +28,8 @@ function CodeView() {
   const { messages, setMessages } = useContext(MessagesContext);
   const { userDetail, setUserDetail } = useContext(UserDetailContext);
   const UpdateFiles = useMutation(api.workspace.UpdateFiles);
-  const [loading, setLoading] = React.useState(false);
+const [loading, setLoading] = React.useState(false);
+const [hasGenerated, setHasGenerated] = React.useState(false); // ADD THIS
   const [workspaceLoaded, setWorkspaceLoaded] = React.useState(false);
 
   React.useEffect(() => {
@@ -60,6 +61,7 @@ function CodeView() {
 
   const GenerateAiCode = async () => {
     setLoading(true);
+      setHasGenerated(true);
     const PROMPT = JSON.stringify(messages) + " " + Prompt.CODE_GEN_PROMPT;
     try {
       const result = await axios.post("/api/gen-ai-code", {
@@ -148,7 +150,7 @@ function CodeView() {
           )}
         </SandpackLayout>
       </SandpackProvider>
-      {loading && (
+      /* {loading && (
         <div className="p-10 bg-gray-900 opacity-80 absolute top-0 rounded-lg w-full h-full flex items-center justify-center">
           <Loader className="animate-spin h-10 w-10 text-white" />
           <h2 className="text-white ml-3">Generating Your Files...</h2>
@@ -156,6 +158,14 @@ function CodeView() {
       )}
     </div>
   );
+} */
+{hasGenerated && (
+        <div className="p-10 bg-gray-900 opacity-80 absolute top-0 rounded-lg w-full h-full flex items-center justify-center">
+          <Loader className={`h-10 w-10 text-white ${loading ? "animate-spin" : ""}`} />
+          <h2 className="text-white ml-3">Generating Your Files...</h2>
+        </div>
+      )}
+    </div>
+  );
 }
-
 export default CodeView;
