@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import Footer from "@/components/custom/Footer";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { Button } from "@/components/ui/button";
-import { User, Lock, Loader2, Chrome, ArrowRight, Sparkles, Zap, Shield, Code2, ArrowUpRight, CheckCircle } from "lucide-react";
+import { User, Lock, Loader2, Chrome, ArrowRight, Sparkles, Zap, Shield, ArrowUpRight, CheckCircle } from "lucide-react";
 import axios from "axios";
 import Link from "next/link";
 
@@ -306,21 +306,6 @@ export default function AuthPage() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-5 group">
-                <div className="p-3 bg-orange-500/20 rounded-xl border border-orange-500/30 group-hover:scale-110 transition-transform duration-300">
-                  <Code2 className="h-7 w-7 text-orange-400" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold text-white group-hover:text-orange-300 transition-colors">GitHub Integration</h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    Seamlessly push your projects to GitHub repositories
-                  </p>
-                  <div className="flex items-center gap-2 text-sm text-orange-400">
-                    <CheckCircle className="h-4 w-4" />
-                    <span>Auto-commits</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <div className="pt-8 border-t border-gray-800">
