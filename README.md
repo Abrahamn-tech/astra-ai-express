@@ -19,6 +19,7 @@ Unlike traditional no-code builders, Astra AI understands **intent**, not just t
 - **Interactive AI chat** for iterative refinement
 - **Full-stack architecture** with file management
 - **AI-powered prompt enhancement** for better results
+- **GitHub integration** for seamless version control
 - **Previous workspace history** for easy project access
 - **Instant deployment** capabilities
 - **Token-based usage** system
@@ -63,6 +64,13 @@ Simply describe what you want to build, and Astra AI handles the rest — from c
 - **Export functionality** to download projects
 - **Deploy capabilities** for production deployment
 
+### 🐙 **GitHub Integration**
+- **OAuth authentication** for secure GitHub access
+- **Push to GitHub** directly from the workspace
+- **Repository configuration** (public/private, custom naming)
+- **Initial commit** with workspace code
+- **Seamless version control** integration
+
 ### 🎨 **Modern User Interface**
 - **Dark theme** with gradient animations
 - **Responsive design** across all devices
@@ -102,7 +110,12 @@ Simply describe what you want to build, and Astra AI handles the rest — from c
 
 ### **Authentication & Payments**
 - **@react-oauth/google** - Google OAuth 2.0 integration
+- **GitHub OAuth** - GitHub authentication for version control
 - **PayPal SDK** - Payment processing integration
+
+### **Version Control**
+- **GitHub API** - Repository creation and code pushing
+- **Octokit** - GitHub REST API client
 
 ### **Utilities**
 - **UUID** - Unique identifier generation
@@ -119,6 +132,7 @@ Simply describe what you want to build, and Astra AI handles the rest — from c
 Node.js 20.x or higher
 npm/yarn/pnpm package manager
 Google Cloud Console project (for OAuth)
+GitHub OAuth App (for GitHub integration)
 Google AI Studio account (for Gemini API)
 Convex account
 ```
@@ -153,11 +167,25 @@ GOOGLE_GEMINI_API_KEY=your_gemini_api_key_here
 # Google OAuth
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_oauth_client_id
 
+# GitHub OAuth
+NEXT_PUBLIC_GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+
 # PayPal (Optional - for payments)
 NEXT_PUBLIC_PAYPAL_CLIENT_ID=your_paypal_client_id
 ```
 
-### 4. Initialize Convex Backend
+### 4. Setup GitHub OAuth App
+
+1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
+2. Click "New OAuth App"
+3. Fill in the details:
+   - **Application name**: Astra AI
+   - **Homepage URL**: `http://localhost:3000`
+   - **Authorization callback URL**: `http://localhost:3000/api/auth/github/callback`
+4. Copy the Client ID and Client Secret to your `.env.local`
+
+### 5. Initialize Convex Backend
 
 ```bash
 # Login to Convex
@@ -172,7 +200,7 @@ This will:
 - Set up real-time subscriptions
 - Deploy backend functions
 
-### 5. Start Development Server
+### 6. Start Development Server
 
 ```bash
 npm run dev
@@ -180,7 +208,7 @@ npm run dev
 
 Visit `http://localhost:3000` to see Astra AI in action.
 
-### 6. Build for Production
+### 7. Build for Production
 
 ```bash
 npm run build
@@ -240,7 +268,14 @@ npm start
    AI: [Implements state persistence]
    ```
 
-8. **📤 Export & Deploy**
+8. **🐙 Push to GitHub**
+   - Click "Push to GitHub" button in workspace
+   - First time: Authenticate with GitHub OAuth
+   - Configure repository name and visibility
+   - Click "Push to GitHub" to create repo and commit code
+   - Your project is now on GitHub!
+
+9. **📤 Export & Deploy**
    - Click "Export" to download project as ZIP
    - Click "Deploy" to push to production (feature in development)
 
@@ -296,6 +331,9 @@ astra-ai/
 │   │   ├── ai-chat/              # Chat AI endpoint
 │   │   ├── gen-ai-code/          # Code generation endpoint
 │   │   ├── enhance-prompt/       # Prompt enhancement endpoint
+│   │   └── auth/
+│   │       └── github/
+│   │           └── callback/     # GitHub OAuth callback
 │   ├── workspace/[id]/           # Dynamic workspace routes
 │   └── page.jsx                  # Homepage
 ├── components/
@@ -307,7 +345,7 @@ astra-ai/
 │   │   └── SignInDialog.jsx      # Authentication dialog
 │   └── ui/                       # shadcn/ui components
 ├── context/                      # React Context providers
-│   ├── ActionContext.jsx         # Export/deploy actions
+│   ├── ActionContext.jsx         # Export/deploy/GitHub actions
 │   ├── MessagesContext.jsx       # Chat message state
 │   └── UserDetailContext.jsx     # User authentication state
 ├── convex/                       # Convex backend
@@ -343,8 +381,9 @@ graph TB
     O --> P[Render in Sandpack]
     P --> Q{User Action?}
     Q -->|Refine| L
-    Q -->|Export| R[Download ZIP]
-    Q -->|Back to Home| S[View All Workspaces]
+    Q -->|Push to GitHub| R[GitHub Integration]
+    Q -->|Export| S[Download ZIP]
+    Q -->|Back to Home| T[View All Workspaces]
 ```
 
 ### Key Components
@@ -372,7 +411,9 @@ graph TB
 
 **Header.jsx** - Navigation and user management
 - Google OAuth integration
+- GitHub OAuth integration
 - Export/Deploy action triggers
+- Push to GitHub functionality
 - User profile dropdown
 - Back to home button (workspace only)
 - Context-aware button visibility
@@ -380,6 +421,8 @@ graph TB
 **ActionContext.jsx** - Action management
 - Handles export functionality
 - Manages deployment process
+- GitHub push integration
+- Repository creation and code upload
 - Loading states and error handling
 
 ---
@@ -415,6 +458,25 @@ export default defineSchema({
 POST /api/enhance-prompt
 Body: { prompt: string }
 Response: { enhancedPrompt: string }
+```
+
+#### GitHub OAuth Callback
+```javascript
+// app/api/auth/github/callback/route.js
+GET /api/auth/github/callback?code=xxx
+Sets github_token cookie
+Redirects to home
+```
+
+#### Push to GitHub
+```javascript
+// Used in ActionContext
+handleAction("pushToGithub", {
+  repoName: string,
+  isPrivate: boolean,
+  commitMessage: string,
+  workspaceCode: object
+})
 ```
 
 ### Sandpack Dependencies
@@ -490,8 +552,9 @@ We welcome contributions! Here's how to get started:
 3. **Make your changes**
 4. **Test thoroughly**
    - Test prompt enhancement
-    - Test workspace history
-    - Test navigation flows
+   - Test GitHub push functionality
+   - Test workspace history
+   - Test navigation flows
 5. **Commit with clear messages**
    ```bash
    git commit -m "feat: add amazing feature"
@@ -519,6 +582,7 @@ We welcome contributions! Here's how to get started:
 - Deploy functionality in development
 - Large projects may hit token limits
 - Sandpack has limited library support
+- GitHub push requires OAuth authentication each session (no refresh token)
 - Workspace cards limited to 6 on home page (view all for more)
 
 ---
@@ -531,6 +595,7 @@ We welcome contributions! Here's how to get started:
 - ✅ AI chat refinement
 - ✅ User authentication
 - ✅ Prompt enhancement
+- ✅ GitHub integration
 - ✅ Previous workspace history
 
 ### Phase 2 (In Progress) 🔄
@@ -538,6 +603,7 @@ We welcome contributions! Here's how to get started:
 - 🔄 Project templates
 - 🔄 Code export improvements
 - 🔄 Deploy to production
+- 🔄 GitHub refresh token support
 - 🔄 Workspace search and filtering
 
 ### Phase 3 (Planned) 📋
@@ -578,6 +644,7 @@ Special thanks to the amazing open-source community:
 - **[Next.js Team](https://nextjs.org/)** - For the incredible React framework
 - **[Convex](https://www.convex.dev/)** - For real-time backend magic
 - **[Google AI](https://ai.google.dev/)** - For Gemini API access
+- **[GitHub](https://github.com/)** - For OAuth and API integration
 - **[CodeSandbox](https://codesandbox.io/)** - For Sandpack playground
 - **[shadcn](https://ui.shadcn.com/)** - For beautiful UI components
 - **[Tailwind Labs](https://tailwindcss.com/)** - For utility-first CSS
@@ -592,12 +659,14 @@ If you encounter issues or have questions:
 1. Check existing [GitHub Issues](https://github.com/priyyannshhu/astra-ai/issues)
 2. Open a new issue with detailed information
 3. Provide reproduction steps and screenshots
+4. For GitHub integration issues, check OAuth configuration
 
 ---
 
 ## 🔐 Security
 
 - All authentication uses OAuth 2.0
+- GitHub tokens are stored securely in HTTP-only cookies
 - API keys are never exposed to the client
 - User data is encrypted in transit and at rest
 - Regular security audits recommended
@@ -609,6 +678,7 @@ If you encounter issues or have questions:
 - Use prompt enhancement for better code generation
 - Keep workspaces organized by project type
 - Export projects regularly as backups
+- Use GitHub push for version control
 - Clear old workspaces to improve load times
 
 ---
