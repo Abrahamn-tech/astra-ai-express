@@ -6,7 +6,7 @@ import { UserDetailContext } from "@/context/UserDetailContext";
 import { ActionContext } from "@/context/ActionContext";
 import Link from "next/link";
 import SignInDialog from "@/components/custom/SignInDialog";
-import { Download, Rocket, Github, ChevronLeft, Loader2, Home, FolderOpen, Settings } from "lucide-react";
+import { Download, Rocket, ChevronLeft, Home, FolderOpen, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import {
@@ -17,23 +17,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 
 function Header() {
   const { userDetail, setUserDetail, logout } = useContext(UserDetailContext);
-  const { action, setAction, isLoading, error, handleAction } =
-    useContext(ActionContext);
+  const { setAction, isLoading } = useContext(ActionContext);
   const [openDialog, setOpenDialog] = useState(false);
-  const [githubDialog, setGithubDialog] = useState(false);
-  const [repoName, setRepoName] = useState("astra-ai-project");
-  const [isPrivate, setIsPrivate] = useState(false);
   const path = usePathname();
   const router = useRouter();
   const isWorkspace = path?.includes("workspace");
@@ -52,46 +40,6 @@ function Header() {
       actionType: actionType,
       timeStamp: Date.now(),
     });
-  };
-
-  const handleGithubClick = async () => {
-    // Check for token in cookie
-    const cookies = document.cookie.split(";").find((c) => c.includes("github_token"));
-    
-    if (!cookies) {
-      // Redirect to GitHub OAuth
-      const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
-      const redirectUri = `${window.location.origin}/api/auth/github/callback`;
-      const scope = "repo,user";
-      window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
-    } else {
-      // Show repo name dialog
-      setGithubDialog(true);
-    }
-  };
-
-  const handlePushToGithub = async () => {
-    try {
-      // Get workspace code (you need to provide this from your workspace state)
-      const workspaceCode = {
-        // This should come from your workspace component
-        // Example: "package.json": JSON.stringify(packageJson),
-        // "src/App.jsx": appCode,
-      };
-
-      await handleAction("pushToGithub", {
-        repoName,
-        isPrivate,
-        commitMessage: "Initial commit from Astra AI",
-        workspaceCode,
-      });
-
-      setGithubDialog(false);
-      // Show success message
-      alert("✅ Successfully pushed to GitHub!");
-    } catch (err) {
-      alert("❌ Error pushing to GitHub: " + err.message);
-    }
   };
 
   return (
@@ -163,7 +111,7 @@ function Header() {
               </div>
             )}
 
-            {/* Export, Deploy & GitHub buttons - only show on workspace pages */}
+            {/* Export & Deploy buttons - only show on workspace pages */}
             {isWorkspace && (
               <div className="flex gap-3">
                 <Button
@@ -186,27 +134,6 @@ function Header() {
                 >
                   <Rocket className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                   <span className="font-medium">Deploy</span>
-                </Button>
-                <Button
-                  onClick={handleGithubClick}
-                  className="text-white flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-purple-500/30 hover:scale-105 group"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%)",
-                  }}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="font-medium">Pushing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Github className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                      <span className="font-medium">Push to GitHub</span>
-                    </>
-                  )}
                 </Button>
               </div>
             )}
@@ -245,69 +172,6 @@ function Header() {
           </>
         )}
       </div>
-
-      {/* GitHub Push Dialog */}
-      <Dialog open={githubDialog} onOpenChange={setGithubDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Push to GitHub</DialogTitle>
-            <DialogDescription>
-              Configure your repository details
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium">Repository Name</label>
-              <Input
-                value={repoName}
-                onChange={(e) => setRepoName(e.target.value)}
-                placeholder="astra-ai-project"
-                className="mt-2"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="private"
-                checked={isPrivate}
-                onChange={(e) => setIsPrivate(e.target.checked)}
-                className="w-4 h-4"
-              />
-              <label htmlFor="private" className="text-sm font-medium">
-                Make repository private
-              </label>
-            </div>
-            {error && <div className="text-red-500 text-sm">{error}</div>}
-            <div className="flex gap-3 justify-end">
-              <Button
-                variant="outline"
-                onClick={() => setGithubDialog(false)}
-                disabled={isLoading}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handlePushToGithub}
-                disabled={isLoading}
-                className="text-white"
-                style={{
-                  background:
-                    "linear-gradient(90deg, #6366f1 0%, #4f46e5 100%)",
-                }}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    Pushing...
-                  </>
-                ) : (
-                  "Push to GitHub"
-                )}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* SignInDialog */}
       <SignInDialog
